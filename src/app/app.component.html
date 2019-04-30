@@ -49,14 +49,22 @@
         </div>
       </div>
     </div>
-    <div class="col-md-8" *ngIf="selectedQuiz">
+    <div 
+      class="col-md-8" 
+      *ngIf="selectedQuiz"
+      [@detailsFromLeft]="detailsAnimationState"
+      (@detailsFromLeft.done)="detailsFromLeftAnimationComplete()"
+    >
       <br>
-      <button 
+      <div
+        [@pulseSaveCancelButtons]="numberOfDeletedQuizzes + numberOfAddedQuizzes + numberOfEditedQuizzes > 0 ? 'somethingToSave' : 'nothingToSave' "
+      >
+        <button 
         class="btn"
         (click)="saveBatchEdits()"
         [class.btn-outline-dark]="numberOfDeletedQuizzes + numberOfAddedQuizzes + numberOfEditedQuizzes === 0"
         [class.btn-dark]="numberOfDeletedQuizzes + numberOfAddedQuizzes + numberOfEditedQuizzes > 0"
-      >
+        >
         Save Quizzes
         <span 
           class="badge badge-danger ml-1"
@@ -83,7 +91,8 @@
       >
         Cancel
       </button>
-      <br>
+
+      </div>
       <br>
       <div class="card">  
         <div class="card-header">

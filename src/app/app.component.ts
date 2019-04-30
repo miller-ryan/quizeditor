@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { QuizService } from './quiz.service';
+import { trigger, style, animate, transition, keyframes } from '@angular/animations';
 
 interface QuizDisplay {
   name: string;
@@ -18,7 +19,29 @@ interface QuestionDisplay {
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('detailsFromLeft', [
+      transition('leftPosition => finalPosition', [
+        animate('300ms', keyframes([
+          style({ left: '-30px', offset: 0.0, opacity: 0 }),
+          style({ left: '-20px', offset: 0.25, opacity: .1 }),
+          style({ left: '-10px', offset: 0.5, opacity: .25 }),
+          style({ left: '-5px', offset: 0.75, opacity: .66 }),
+          style({ left: '0px', offset: 1.0, opacity: 1 })
+        ]))
+      ]),
+    ]),
+    trigger('pulseSaveCancelButtons', [
+      transition('nothingToSave => somethingToSave', [
+        animate('400ms', keyframes([
+          style({ transform: 'scale(1.0)', 'transform-origin': 'top left', offset: 0.0 }),
+          style({ transform: 'scale(1.2)', 'transform-origin': 'top left', offset: 0.5 }),
+          style({ transform: 'scale(1.0)', 'transform-origin': 'top left', offset: 1.0 })
+        ]))
+      ])
+    ])
+  ]
 })
 export class AppComponent implements OnInit {
 
@@ -27,11 +50,17 @@ export class AppComponent implements OnInit {
     // of the component fails : - (
   }
 
+  detailsAnimationState = "leftPosition";
+  detailsFromLeftAnimationComplete() {
+    this.detailsAnimationState = "leftPosition"
+  }
+
   quizzes: QuizDisplay[] = [];
   selectedQuiz: QuizDisplay = undefined;
 
   selectQuiz(q: QuizDisplay) {
     this.selectedQuiz = q;
+    this.detailsAnimationState = "finalPosition";
   }
 
   addNewQuiz() {
@@ -55,6 +84,9 @@ export class AppComponent implements OnInit {
 
     // Select the newly added quiz.
     this.selectedQuiz = newQuiz; 
+
+    this.detailsAnimationState = "finalPosition";
+
   }
 
   removeQuestion(questionToRemove) {
